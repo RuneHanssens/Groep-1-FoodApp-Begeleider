@@ -4,11 +4,30 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8" />
     <title>Overzicht</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>    
+    <script src="js/overviewGraph.js" type="text/javascript"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" type="text/css" media="all" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/smoothness/jquery-ui.css"    />
+    <link rel="stylesheet" type="text/css" media="all" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css"    />
     <link rel="stylesheet" href="css/stylesheet.css"">
+
+    <script>
+      jQuery.browser = {};
+      (function () {
+          jQuery.browser.msie = false;
+          jQuery.browser.version = 0;
+          if (navigator.userAgent.match(/MSIE ([0-9]+)\./)) {
+              jQuery.browser.msie = true;
+              jQuery.browser.version = RegExp.$1;
+          }
+      })();
+    </script>
   </head>
-  <body>
-    
-    <nav class="navbar navbar-expand-md navbar-light bg-light sticky-top border-bottom" style="margin-bottom: 20px;">
+  <body>  
+    <nav class="navbar navbar-expand-md navbar-light bg-light border-bottom" style="margin-bottom: 20px;">
       <button class="navbar-toggler" data-toggle="collapse" data-target="#collapse_target">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -28,66 +47,81 @@
         </ul>
     </div>
   </nav>
-  <div class="container d-flex flex-column justify-content-center">
+  <div class="container" id="graphDiv">
 
     <div class="input-group mb-3">
-        <div class="input-group-prepend">
-          <label class="input-group-text" for="categoryInput">Categorieën</label>
+      <div class="input-group-prepend mylabel">
+        <label class="input-group-text w-100" for="userInput">Gebruikersnaam</label>
+      </div>
+      <input id="userInput" class="custom-select" style="background: none" >
+    </div>
+    <div class="input-group mb-3">
+        <div class="input-group-prepend mylabel">
+          <label class="input-group-text w-100" for="categoryInput">Categorieën</label>
         </div>
         <select class="custom-select" id="categoryInput">
           <option selected>Kies...</option>
           <option value="Sport">Sport</option>
           <option value="Water">Water</option>
           <option value="Groenten">Groenten</option>
+          <option value="Groenten">Groenten</option>
+          <option value="Groenten">Groenten</option>
+          <option value="Groenten">Groenten</option>
         </select>
       </div>
-
+     
+      
       <div class="input-group date" data-provide="datepicker">
-        <input type="text" class="form-control">
-        <div class="input-group-addon">
-            <span class="glyphicon glyphicon-th"></span>
-        </div>
+          <input type="text" class="form-control" id="mydatepicker">
+          <div class="input-group-addon">
+              <span class="glyphicon glyphicon-th"></span>
+          </div>
       </div>
 
+
+      <button type="button" class="btn btn-outline-info float-right" onclick="focusGraph()">Gegevens ophalen</button>
       <canvas id="myChart"></canvas>
-
-      <input type="button" value="test" onclick="test()">
-
-      <table class="table table-striped" style="margin-top:20px">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Type</th>
-            <th scope="col">Buitenshuis</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th scope="col">1</th>
-            <td scope="row">Testje</td>
-            <td>Ja</td>
-          </tr>
-          <tr>
-            <th scope="col">2</th>
-            <td scope="row">Testje2</td>
-            <td>Nee</td>
-          </tr>
-          <tr>
-            <th scope="col">3</th>
-            <td scope="row">Testje3</td>
-            <td>Nee</td>
-          </tr>
-        </tbody>
-      </table>
-
+      <p id="chartInfo" class="text-info text-center">Klik op een van de balken om de gegevens van de dag te bekijken.</p>
+    </div>
+      
+    <div class="container">
+      <div id="table">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Type</th>
+              <th scope="col">Buitenshuis</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="col">1</th>
+              <td scope="row">Testje</td>
+              <td>Ja</td>
+            </tr>
+            <tr>
+              <th scope="col">2</th>
+              <td scope="row">Testje2</td>
+              <td>Nee</td>
+            </tr>
+            <tr>
+              <th scope="col">3</th>
+              <td scope="row">Testje3</td>
+              <td>Nee</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    
   </div>
-  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-  <script src="js/overviewGraph.js" type="text/javascript"></script>
   <script>
     window.onload = render()
+    console.log('yuuu')
+    $('#mydatepicker').datepicker({
+    format: "dd/mm/yyyy"
+  });
   </script>
 </body>
 </html>
+

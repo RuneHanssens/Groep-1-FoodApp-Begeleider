@@ -33,11 +33,23 @@ render = () =>{
                     }
                 }]
             },
-            onClick: (event, elements) => {console.log(event);console.log(elements);}
+            onClick: (event, elements) => onBarClick(elements)
         },
     })
 }
 
 test = () =>{
     console.log($('#categoryInput')[0].options[$('#categoryInput')[0].selectedIndex].value)
+}
+
+focusGraph = () =>{
+    console.log('test')
+    $('#chartInfo')[0].scrollIntoView({block:'end', behavior:'smooth'})
+}
+
+onBarClick = (elements) => {
+    console.log(elements)
+    if(elements.length > 0){
+        $('#table')[0].scrollIntoView({block:'start', behavior:'smooth'})
+    }
 }

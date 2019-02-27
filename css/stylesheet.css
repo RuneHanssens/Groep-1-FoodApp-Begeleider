@@ -1,0 +1,26 @@
+.mylabel {
+    width: 150px
+}
+
+#ui-datepicker-div td>a{
+    background: transparent !important;
+    border: none;
+}
+
+#ui-datepicker-div {
+    border: "#fcfcfc";
+}
+
+.ui-datepicker-header {
+    background: aliceblue;
+    border: none;
+    font-weight: normal;
+}
+
+#ui-datepicker-div td>a:hover{
+    background: aliceblue !important;
+}
+
+#ui-datepicker-div th {
+    font-weight: normal
+}
