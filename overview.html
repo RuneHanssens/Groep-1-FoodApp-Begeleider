@@ -5,30 +5,22 @@
     <title>Overzicht</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>    
     <script src="js/overviewGraph.js" type="text/javascript"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js" type="text/javascript"></script>
-    <link rel="stylesheet" type="text/css" media="all" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/themes/smoothness/jquery-ui.css"    />
-    <link rel="stylesheet" type="text/css" media="all" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/css/bootstrap-datepicker.css"    />
     <link rel="stylesheet" href="css/stylesheet.css"">
-
+    <link id="bsdp-css" href="datepicker/css/bootstrap-datepicker3.min.css" rel="stylesheet">
+    <script src="datepicker/js/bootstrap-datepicker.min.js"></script>
     <script>
-      jQuery.browser = {};
-      (function () {
-          jQuery.browser.msie = false;
-          jQuery.browser.version = 0;
-          if (navigator.userAgent.match(/MSIE ([0-9]+)\./)) {
-              jQuery.browser.msie = true;
-              jQuery.browser.version = RegExp.$1;
-          }
-      })();
+      $.fn.datepicker.defaults.weekStart = 1;
+      $.fn.datepicker.defaults.format = 'dd/mm/yyyy';
     </script>
+    <script type="text/javascript" src="date/date-nl-BE.js"></script>
   </head>
   <body>  
     <nav class="navbar navbar-expand-md navbar-light bg-light border-bottom" style="margin-bottom: 20px;">
-      <button class="navbar-toggler" data-toggle="collapse" data-target="#collapse_target">
+    <button class="navbar-toggler" data-toggle="collapse" data-target="#collapse_target">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="collapse_target">
@@ -37,12 +29,9 @@
         <ul class="navbar-nav">
             <li class="nav-item">
                 <a class="nav-link" href="overview.html">Overzicht</a>
-            </li>
+            </li> 
             <li class="nav-item">
-                <a class="nav-link" href="#">Tips</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#"/>Download de app</a>
+                <a class="nav-link" href="download.html"/>Download de app</a>
             </li>
         </ul>
     </div>
@@ -61,25 +50,30 @@
         </div>
         <select class="custom-select" id="categoryInput">
           <option selected>Kies...</option>
-          <option value="Sport">Sport</option>
-          <option value="Water">Water</option>
-          <option value="Groenten">Groenten</option>
-          <option value="Groenten">Groenten</option>
-          <option value="Groenten">Groenten</option>
-          <option value="Groenten">Groenten</option>
+          <option value="movement">Sport</option>
+          <option value="water">Water</option>
+          <option value="vegetable">Groenten</option>
+          <option value="fruit">Fruit</option>
+          <option value="nuts">Noten</option>
+          <option value="starchproduct">Brood Pasta Rijst en Aardapplen</option>
+          <option value="dairyfishpoultry">Vis Gevogelte Kip en Zuivelproducten</option>
+          <option value="fattyfood">Vlees en Boter</option>
+          <option value="snack">Restgroep</option>          
         </select>
       </div>
      
       
-      <div class="input-group date" data-provide="datepicker">
-          <input type="text" class="form-control" id="mydatepicker">
+      <div class="input-group date" data-provide="datepicker" class="datepickerdiv" >
+          <input type="text" class="form-control" id="mydatepicker" placeholder="Kies een datum..."">
           <div class="input-group-addon">
               <span class="glyphicon glyphicon-th"></span>
           </div>
       </div>
 
+      <div class="text-danger" style="margin-top:20px" id="errors"></div>
 
-      <button type="button" class="btn btn-outline-info float-right" onclick="focusGraph()">Gegevens ophalen</button>
+
+      <button type="button" class="btn btn-outline-info float-right" style="margin-top:20px; margin-bottom:30px;" onclick="submit()">Gegevens ophalen</button>
       <canvas id="myChart"></canvas>
       <p id="chartInfo" class="text-info text-center">Klik op een van de balken om de gegevens van de dag te bekijken.</p>
     </div>
@@ -116,11 +110,11 @@
     
   </div>
   <script>
-    window.onload = render()
-    console.log('yuuu')
-    $('#mydatepicker').datepicker({
-    format: "dd/mm/yyyy"
-  });
+    //window.onload = render()
+    $(document).ready(function(){
+      render()
+      getUsername()
+    })
   </script>
 </body>
 </html>
