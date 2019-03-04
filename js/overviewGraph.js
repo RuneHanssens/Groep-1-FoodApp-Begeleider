@@ -1,14 +1,14 @@
 let dates;
 let categoryString;
 let usernameString;
-let myChart
+let myChart;
 
 render = data => {
   var ctx = document.getElementById("myChart").getContext("2d");
-  if(myChart){
-      myChart.destroy()
+  if (myChart) {
+    myChart.destroy();
   }
-   myChart = new Chart(ctx, {
+  myChart = new Chart(ctx, {
     type: "bar",
     data: {
       labels: ["ma", "di", "wo", "do", "vr", "za", "zo"],
@@ -69,21 +69,32 @@ onBarClick = async elements => {
     if (elements[0]) {
       let date;
       date = dates[elements[0]._index];
-      console.log(
-        `http://193.191.177.8:10634/api/user/day/${categoryString}?username=${usernameString}&date=${date}`
-      );
-
+      try {
+        let data = await fetch(`http://193.191.177.8:10634/api/site/user/day/${categoryString}?username=${usernameString}&date=${date}`)
+        let jsonData = await data.json()
+        console.log(jsonData)
+        for (let i = 0; i < jsonData.length; i++) {
+          jsonData[i]
+          $('#myTable').append(
+            ` 
+            <tr>
+              <th scope="col">${i + 1}</th>
+              <td scope="row">${jsonData[i]}</td>
+            </tr>`
+          )
+        }
+      } catch (error) {
+        console.log(error)
+      }
       if (elements.length > 0) {
         $("#table")[0].scrollIntoView({ block: "start", behavior: "smooth" });
       }
     }
   }
-
-  //TODO
-  //let data = await fetch(`http://193.191.177.8:10634/api/user/day/${categoryString}?username=${usernameString}&date=${date}`)
 };
 
 submit = async () => {
+  $('#myTable').empty()
   console.log("submitting data");
   let category = $("#categoryInput").val();
   let username = $("#userInput").val();
@@ -133,33 +144,43 @@ submit = async () => {
     console.log(
       `http://193.191.177.8:10634/api/user/dayrange?startDate=${startDate}&endDate=${endDate}&category=${category}&username=${username}`
     );
-    let data = await fetch(
-      `http://193.191.177.8:10634/api/user/dayrange?startDate=${startDate}&endDate=${endDate}&category=${category}&username=${username}`
-    );
-    console.log(data);
-    let dataJson = await data.json();
+    try {
+      let data = await fetch(
+        `http://193.191.177.8:10634/api/user/dayrange?startDate=${startDate}&endDate=${endDate}&category=${category}&username=${username}`
+      );
 
-    console.log(dataJson);
-    let sorted = [];
-    Object.keys(dataJson).forEach(function(key, index) {
-      let el = dataJson[key];
-      el.sortDate = new Date(key);
-      sorted.push(el);
-    });
+      console.log(data);
+      if (data.status == 200) {
+        let dataJson = await data.json();
+        console.log(dataJson);
+        let sorted = [];
+        Object.keys(dataJson).forEach(function(key, index) {
+          let el = dataJson[key];
+          el.sortDate = new Date(key);
+          sorted.push(el);
+        });
 
-    sorted.sort(function(a, b) {
-      return a.sortDate - b.sortDate;
-    });
+        sorted.sort(function(a, b) {
+          return a.sortDate - b.sortDate;
+        });
 
-    dates = sorted.map(o => formatDate(o.sortDate));
+        dates = sorted.map(o => formatDate(o.sortDate));
 
-    categoryString = category;
-    usernameString = username;
-    render(sorted);
+        categoryString = category;
+        usernameString = username;
+        render(sorted);
 
-    focusGraph();
+        focusGraph();
 
-    localStorage.setItem("username", username);
+        localStorage.setItem("username", username);
+      } else {
+        $("#errors").html(
+          "<p>Er is iets misgegaan controleer alle gegevens of probeer later opnieuw.</p>"
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
   } else {
     let errorhtml = "";
     for (var i = 0; i < errors.length; i++) {
