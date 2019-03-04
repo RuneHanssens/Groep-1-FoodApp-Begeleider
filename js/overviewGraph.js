@@ -52,7 +52,7 @@ render = data => {
       legend: {
         display: false
       },
-      onClick: (event, elements) => onBarClick(elements)
+      onClick: (event, elements) => onBarClick(elements),
     }
   });
 };
@@ -70,21 +70,23 @@ onBarClick = async elements => {
       let date;
       date = dates[elements[0]._index];
       try {
-        let data = await fetch(`http://193.191.177.8:10634/api/site/user/day/${categoryString}?username=${usernameString}&date=${date}`)
-        let jsonData = await data.json()
-        console.log(jsonData)
+        let data = await fetch(
+          `http://193.191.177.8:10634/api/site/user/day/${categoryString}?username=${usernameString}&date=${date}`
+        );
+        let jsonData = await data.json();
+        console.log(jsonData);
         for (let i = 0; i < jsonData.length; i++) {
-          jsonData[i]
-          $('#myTable').append(
+          jsonData[i];
+          $("#myTable").append(
             ` 
             <tr>
               <th scope="col">${i + 1}</th>
               <td scope="row">${jsonData[i]}</td>
             </tr>`
-          )
+          );
         }
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
       if (elements.length > 0) {
         $("#table")[0].scrollIntoView({ block: "start", behavior: "smooth" });
@@ -94,7 +96,7 @@ onBarClick = async elements => {
 };
 
 submit = async () => {
-  $('#myTable').empty()
+  $("#myTable").empty();
   console.log("submitting data");
   let category = $("#categoryInput").val();
   let username = $("#userInput").val();
