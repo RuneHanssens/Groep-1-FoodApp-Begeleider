@@ -70,6 +70,7 @@ onBarClick = async elements => {
       let date;
       date = dates[elements[0]._index];
       try {
+        $("#myTable").empty();
         let data = await fetch(
           `http://193.191.177.8:10634/api/site/user/day/${categoryString}?username=${usernameString}&date=${date}`
         );
